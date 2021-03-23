@@ -11,20 +11,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
 
-    socket.on('login', msg =>{
-        let username = msg.jmeno;
-
-        socket.emit('message', formatMessage(`Uživatel ${jmeno} se připojil.`));
+    socket.on('login', msg => {
+        console.log (msg);
+        msg.zprava = "uspěšně přihlášen.";
+        socket.emit('message',msg);
     });
 
     socket.on('chat', msg => {
-        socket.emit("Uživatel přihlášen", jmeno);
-        io.emit('chat', msg);
+        socket.emit('chat', msg);
+    });
+/*
+    socket.on('disconnect', () => {
+        socket.emit('message', `Uživatel ${jmeno} se odpojil.`);
+    });
+*/
+    socket.on('chatMessage', msg => {
+        socket.emit('message', msg);
     });
 });
 
 
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, function(){
-    console.log(`Server listening on port ${PORT}`);
+const PORT = 5000 || process.env.PORT;
+server.listen(PORT, function () {
+    console.log(`Server funguje na portu ${PORT}`);
 });
