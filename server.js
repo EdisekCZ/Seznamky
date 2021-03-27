@@ -13,23 +13,22 @@ io.on('connection', (socket) => {
 
     socket.on('login', msg => {
         console.log (msg);
-        msg.zprava = "uspěšně přihlášen.";
-        socket.emit('message',msg);
+        let zprava = "uspěšně přihlášen.";
+        io.emit('message', zprava, msg);
     });
 
     socket.on('chat', msg => {
-        socket.emit('chat', msg);
+        io.emit('chat', msg);
     });
-/*
-    socket.on('disconnect', () => {
-        socket.emit('message', `Uživatel ${jmeno} se odpojil.`);
+
+    socket.on('send', (msg, name) => {
+        io.emit('message', msg, name);
     });
-*/
-    socket.on('chatMessage', msg => {
-        socket.emit('message', msg);
+
+    socket.on('logout', name => {
+        io.emit('message', "se odpojil", name);
     });
 });
-
 
 const PORT = 5000 || process.env.PORT;
 server.listen(PORT, function () {
