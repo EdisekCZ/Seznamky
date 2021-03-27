@@ -13,20 +13,11 @@ let user;
 chattovani.style.display = 'none';
 
 login.addEventListener('click', function(){
-    if(jmeno.value){
-        chattovani.style.display = 'block';
-        prihlasit.style.display = 'none';
-        console.log(jmeno.value);
-        user = jmeno.value;
-        socket.emit('login', jmeno.value)
-    }
+    sendLogin();
 });
 
 send.addEventListener('click', function(){
-    if(mess.value){
-        console.log(user);
-        socket.emit('send', mess.value, user)
-    }
+    sendMess()
 });
 
 logout.addEventListener('click', function(){
@@ -39,8 +30,42 @@ socket.on('message', (msg, name) =>{
     if(chattovani.style.display == 'block') {
         console.log(msg);
         chat.innerHTML += `<p>${name}: ${msg}</p>`;
+        chat.scrollTop = chat.scrollHeight - chat.clientHeight;
     }
 });
+
+function sendMess() {
+    if(mess.value){
+        console.log(user);
+        socket.emit('send', mess.value, user);
+        mess.value = "";
+    }
+}
+
+function sendLogin() {
+    if(jmeno.value){
+        chattovani.style.display = 'block';
+        prihlasit.style.display = 'none';
+        console.log(jmeno.value);
+        user = jmeno.value;
+        socket.emit('login', jmeno.value)
+    }
+}
+
+$(document).ready(function() {
+    $(window).keydown(function(event){
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        if ($(jmeno).is( ":focus" )) {
+            sendLogin()
+        }
+        if ($(mess).is( ":focus" )) {
+            sendMess()
+        }
+        return false;
+      }
+    });
+  });
 
 /*
 chatForm.addEventListener('submit', e => {
